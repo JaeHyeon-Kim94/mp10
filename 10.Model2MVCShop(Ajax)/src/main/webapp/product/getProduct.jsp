@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
     pageEncoding="EUC-KR"%>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
 <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
@@ -8,11 +8,11 @@
 
 $(function(){
 
-	var prodNo = $(".ct_write:contains('상품번호')").val();
-	
+	var prodNo = $("input[type=hidden]").val();
+
 	$(".ct_btn01").eq(0).on("click", function(){
 		
-		self.location="/addPurchase?prod_no="+prodNo
+		self.location="/purchase/addPurchase?prodNo="+prodNo;
 	});
 	
 	$(".ct_btn01").eq(1).on("click", function(){
@@ -54,13 +54,14 @@ $(function(){
 	</tr>
 	<tr>
 		<td width="104" class="ct_write">
-			상품번호 <img src="/images/ct_icon_red.gif" width="3" height="3" align="absmiddle"/>
+			상품번호<img src="/images/ct_icon_red.gif" width="3" height="3" align="absmiddle"/>
 		</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
 			<table width="100%" border="0" cellspacing="0" cellpadding="0">
 				<tr>
 					<td width="105">${product.prodNo}</td>
+					<input type="hidden" name="prodNo" value="${product.prodNo}"/>
 				</tr>
 			</table>
 		</td>
@@ -133,18 +134,20 @@ $(function(){
 
 		<table border="0" cellspacing="0" cellpadding="0">
 			<tr>
-		
+				<c:if test="${empty product.proTranCode}">
 				<td width="17" height="23">
 					<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
 				</td>
+				
 				<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
-					<a href="#">구매</a>
+					구매
 				</td>
+				
 				<td width="14" height="23">
 					<img src="/images/ct_btnbg03.gif" width="14" height="23">
 				</td>
 				<td width="30"></td>
-		
+				</c:if>
 				<td width="17" height="23">
 					<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
 				</td>

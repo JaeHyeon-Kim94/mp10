@@ -38,6 +38,12 @@
 		fncGetList(1);
 	});
 		
+	$("td:contains('배송시작')").on("click", function(){
+		var prodNo = $(this).next().val();
+		alert(prodNo);
+		self.location = "/purchase/updateTranCode?prodNo="+prodNo+"&menu=manage&tranCode=2";
+	});
+	
 	$( ".ct_list_pop td:nth-child(3)" ).on("click" , function() {	
 		
 		getProduct($(this).prev().prev().html());
@@ -170,15 +176,39 @@ $( ".ct_list_pop td:nth-child(3)" ).on("mouseenter" , function() {
 				<c:forEach var="product" items="${list}">
 					<c:set var="i" value="${i+1}"/>
 					<tr class="ct_list_pop">
-						<td align="center" >${product.prodNo}</td>
+						<td align="center">${product.prodNo}</td>
 						<td></td>
 						<td align="left" >${product.prodName}</td>
 						<td></td>
 						<td align="left">${product.price}</td>
 						<td></td>
 						<td align="left">${product.manuDate}</td>
-						<td></td>
-						<td align="left">${product.proTranCode}</td>
+						
+						<td align="left">
+						
+					<c:if test="${empty product.proTranCode}">
+					<td align="left">판매중</td>
+					</c:if>
+					
+					
+					<c:if test="${menu=='search' && !empty product.proTranCode}">
+					<td align="left">재고없음</td>
+					</c:if>
+					
+					<c:if test="${menu=='manage' && !empty product.proTranCode}">
+						<c:if test="${product.proTranCode=='1  ' }">
+						<td align="left">구매완료&nbsp;&nbsp;
+						<a href = "#">배송시작</a></td>
+						<input type=hidden name = "prodNo" value ="${product.prodNo}"/>
+						</c:if> 
+						<c:if test="${product.proTranCode=='2  ' }">
+						<td align="left">배송중</td>
+						</c:if>
+						<c:if test="${product.proTranCode=='3  ' }">
+						<td align="left">배송완료</td>
+						</c:if>
+					</c:if>	
+						
 						</tr>
 						<tr>
 					<td id="${product.prodNo}" colspan="11" bgcolor="D6D7D6" height="1"></td>

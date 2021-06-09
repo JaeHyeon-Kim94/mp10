@@ -1,41 +1,6 @@
-<%@page import="com.model2.mvc.service.purchase.vo.PurchaseVO"%>
-<%@page import="com.model2.mvc.common.SearchVO"%>
-<%@page import="java.util.HashMap"%>
-<%@page import="java.util.ArrayList"%>
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
     pageEncoding="EUC-KR"%>
-
-<%
-HashMap<String, Object> map = (HashMap<String, Object>) request.getAttribute("map");
-SearchVO searchVO = (SearchVO) request.getAttribute("searchVO");
-int total = 0;
-ArrayList<PurchaseVO> list = null;
-if (map != null) {
-	total = ((Integer) map.get("count")).intValue();
-	list = (ArrayList<PurchaseVO>) map.get("list");
-}
-
-int currentPage = searchVO.getPage();
-
-int totalPage = 0;
-if (total > 0) {
-	totalPage = total / searchVO.getPageUnit();
-	if (total % searchVO.getPageUnit() > 0)
-		totalPage += 1;
-}
-
-int startPage = ((currentPage-1)/3)*3+1;
-
-int endPage = (startPage+2);
-
-if(endPage>totalPage)
-	endPage=totalPage;
-
-%>
-
-
-
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 
 <html>
@@ -43,11 +8,39 @@ if(endPage>totalPage)
 <title>구매 목록조회</title>
 
 <link rel="stylesheet" href="/css/admin.css" type="text/css">
-
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
-	function fncGetUserList() {
-		document.detailForm.submit();
+	
+	function fncGetList(currentPage) {
+		$("#currentPage").val(currentPage)
+		$("form").attr("method","GET").attr("action","/purchase/listPurchase").submit();
 	}
+	
+	$(function(){
+		
+	$("td:contains('수령확인')").on("click", function(){
+		alert("..");
+		var prodNo = $(this).next().val();
+		alert(prodNo);
+		self.location = "/purchase/updateTranCode?prodNo="+prodNo+"&menu=manage&tranCode=3";
+	});
+	
+	$(".ct_list_pop td:nth-child(1)").on("click",function(){
+		
+		var tranNo = $(this).text().trim();
+		
+		self.location = "/purchase/getPurchaseByTranNo?tranNo="+tranNo;
+		
+	});
+	
+	$(".ct_list_pop td:nth-child(3)").on("click",function(){
+		var userId = $(this).text().trim();
+		
+		self.location = "/user/getUser?userId="+userId;
+		
+	});
+		
+});
 </script>
 </head>
 
@@ -73,7 +66,7 @@ if(endPage>totalPage)
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0"	style="margin-top: 10px;">
 	<tr>
-		<td colspan="11">전체 <%=total %> 건수, 현재 <%=currentPage %> 페이지</td>
+		<td colspan="11">전체 ${resultPage.totalCount } 건수, 현재 ${resultPage.currentPage } 페이지</td>
 	</tr>
 	<tr>
 		<td class="ct_list_b" width="100">No</td>
@@ -92,70 +85,68 @@ if(endPage>totalPage)
 		<td colspan="11" bgcolor="808285" height="1"></td>
 	</tr>
 
-	<%
-	int no = list.size();
-	for (int i=0 ; i < list.size() ; i++){
-		PurchaseVO vo = (PurchaseVO) list.get(i);
-	%>
-	
-	
-	<tr class="ct_list_pop">
+	<c:set var="i" value="0"/>
+	<c:forEach var="purchase" items="${list }">
+		<c:set var="i" value="${i+1 }" />
+		<tr class="ct_list_pop">
 		<td align="center">
-			<%if(vo.getTranCode()==null||vo.getTranCode().trim().equals("1")){ %>
-			<a href="/getPurchase.do?tranNo=<%=vo.getTranNo() %>"><%=vo.getTranNo() %></a>
-			<%}else{ %>
-			<%=vo.getTranNo() %>
-			<%} %>
+		<c:if test="${empty purchase.tranCode || purchase.tranCode == '1  '}">
+			<a href="/purchase/getPurchaseByTranNo?tranNo=${purchase.tranNo}">${purchase.tranNo}</a>
+		</c:if>
+		<c:if test="${purchase.tranCode == '2  ' || purchase.tranCode== '3  ' }">
+			${purchase.tranNo}
+		</c:if>
 		</td>
 		<td></td>
 		<td align="left">
-			<a href="/getUser.do?userId=<%=vo.getBuyer().getUserId() %>"><%=vo.getBuyer().getUserId() %></a>
+			${purchase.buyer.userId}
 		</td>
 		<td></td>
-		<td align="left"><%=vo.getReceiverName()%></td>
+		<td align="left">${purchase.receiverName}</td>
 		<td></td>
-		<td align="left"><%=vo.getReceiverPhone() %></td>
+		<td align="left">${purchase.receiverPhone}</td>
 		<td></td>
 		<td align="left">
-		<%if(vo.getTranCode()!=null){ %>
-			<%if(vo.getTranCode().trim().equals("1")){ %>
+			<c:if test= "${empty purchase.tranCode}">
+			판매중
+			</c:if>
+			<c:if test= "${purchase.tranCode=='1  '}">
 			구매완료
-		<%}else if(vo.getTranCode().trim().equals("2")){%>
+			</c:if>
+			<c:if test= "${purchase.tranCode=='2  '}">
 			배송중
-		<%}else if(vo.getTranCode().trim().equals("3")){%>
+			</c:if>
+			<c:if test= "${purchase.tranCode=='3  '}">
 			배송완료
-		<%}%>
-		<%}%>
+			</c:if>
 		</td>
 		<td></td>
-		<td align="left">
-		<%if(vo.getTranCode().trim().equals("2")){ %>
-		<a href= "/updateTranCode.do?tranNo=<%=vo.getTranNo()%>&tranCode=3">수령확인</a>
-		<%}%>
-		</td>
+		
+			<c:if test= "${purchase.tranCode=='2  '}">
+			<td align="left">
+				<a href="#">수령확인</a>
+			</td>
+			<input type=hidden name = "prodNo" value ="${purchase.purchaseProd.prodNo}"/>
+			</c:if>
+		
+		
 	</tr>
 	<tr>
 		<td colspan="11" bgcolor="D6D7D6" height="1"></td>
 	</tr>
-	<%}%>
+	</c:forEach>
+
 </table>
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top: 10px;">
 	<tr>
 		<td align="center">
-		<%if (currentPage> 3){ %>
-		<a href="/listPurchase.do?page=<%=(startPage-1)%>">◀ 이전</a>
-		<%}else{ %>
-		
-		<%} %>
-		 <%for(int i = startPage; i <= endPage; i++){ %>
-			<a href="/listPurchase.do?page=<%=i%>"><%=i%></a> 
-		<%} %>
-		
-		<%if (endPage<totalPage){ %>
-			<a href="/listPurchase.do?page=<%=endPage+1 %>">이후 ▶</a>
-		<%}%>
-		</td>
+		<td align="center"><input type="hidden" id="currentPage"
+						name="currentPage" value="" /> 
+					<input type="hidden" name="menu" value="${menu}"/>
+					<c:import var="page" url="../common/pageNavigator.jsp"/>
+					${page}
+					</td>
 	</tr>
 </table>
 

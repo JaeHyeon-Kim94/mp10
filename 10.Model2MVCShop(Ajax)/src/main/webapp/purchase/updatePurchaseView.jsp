@@ -1,26 +1,25 @@
-<%@page import="com.model2.mvc.service.purchase.vo.PurchaseVO"%>
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
     pageEncoding="EUC-KR"%>
-
-<%
-PurchaseVO purchaseVO = (PurchaseVO)request.getAttribute("purchaseVO");
-
-%>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
 <link rel="stylesheet" href="/css/admin.css" type="text/css">
 
 <title>구매정보 수정</title>
-
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript" src="../javascript/calendar.js">
+$(function(){
+	
+	
+	
+});
 </script>
 
 </head>
 
 <body bgcolor="#ffffff" text="#000000">
 
-<form name="updatePurchase" method="post"	action="/updatePurchase.do?tranNo=<%=purchaseVO.getTranNo()%>">
+<form name="updatePurchase" method="post"	action="/purchase/updatePurchase">
 
 <table width="100%" height="37" border="0" cellpadding="0" cellspacing="0">
 	<tr>
@@ -49,7 +48,9 @@ PurchaseVO purchaseVO = (PurchaseVO)request.getAttribute("purchaseVO");
 		<td width="104" class="ct_write">구매자아이디</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">user19</td>
-		<input type="hidden" name="buyerId" value="<%=purchaseVO.getBuyer().getUserId() %>">
+		<input type="hidden" name="userId" value="${purchase.buyer.userId}">
+		<input type="hidden" name="tranNo" value="${purchase.tranNo}">
+		<input type="hidden" name="prodNo" value="${purchase.purchaseProd.prodNo}">
 	</tr>
 	<tr>
 		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
@@ -60,15 +61,9 @@ PurchaseVO purchaseVO = (PurchaseVO)request.getAttribute("purchaseVO");
 		<td class="ct_write01">
 			<select 	name="paymentOption" 	class="ct_input_g" style="width: 100px; height: 19px" 
 							maxLength="20">
-				<%
-				if(purchaseVO.getPaymentOption().trim().equals("1")){
-				%>
-				<option value="1" selected>현금구매</option>
-				<option value="2">신용구매</option>
-				<%}else if(purchaseVO.getPaymentOption().trim().equals("2")){ %>
-				<option value="1" >현금구매</option>
-				<option value="2" selected>신용구매</option>
-				<%} %>
+
+				<option value="1" ${!empty purchase.paymentOption && purchase.paymentOption.trim() == 1 ? "selected" : ""}>현금구매</option>
+				<option value="2" ${!empty purchase.paymentOption && purchase.paymentOption.trim() == 2 ? "selected" : ""}>신용구매</option>
 			</select>
 		</td>
 	</tr>
@@ -80,7 +75,7 @@ PurchaseVO purchaseVO = (PurchaseVO)request.getAttribute("purchaseVO");
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
 			<input 	type="text" name="receiverName" 	class="ct_input_g" style="width: 100px; height: 19px" 
-							maxLength="20" value="<%=purchaseVO.getReceiverName()%>" />
+							maxLength="20" value="${purchase.receiverName}" />
 		</td>
 	</tr>
 	<tr>
@@ -91,7 +86,7 @@ PurchaseVO purchaseVO = (PurchaseVO)request.getAttribute("purchaseVO");
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
 			<input 	type="text" name="receiverPhone" class="ct_input_g" style="width: 100px; height: 19px" 
-							maxLength="20" value="<%=purchaseVO.getReceiverPhone() %>" />
+							maxLength="20" value="${purchase.receiverPhone}" />
 		</td>
 	</tr>
 
@@ -102,8 +97,8 @@ PurchaseVO purchaseVO = (PurchaseVO)request.getAttribute("purchaseVO");
 		<td width="104" class="ct_write">구매자주소</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
-			<input 	type="text" name="receiverAddr" class="ct_input_g" style="width: 100px; height: 19px" 
-							maxLength="20" value="<%=purchaseVO.getDivyAddr()%>" />
+			<input 	type="text" name="divyAddr" class="ct_input_g" style="width: 100px; height: 19px" 
+							maxLength="20" value="${purchase.divyAddr}" />
 		</td>
 	</tr>
 	<tr>
@@ -113,8 +108,8 @@ PurchaseVO purchaseVO = (PurchaseVO)request.getAttribute("purchaseVO");
 		<td width="104" class="ct_write">구매요청사항</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
-			<input 	type="text" name="receiverRequest" 	class="ct_input_g" style="width: 100px; height: 19px" 
-							maxLength="20" value="<%=purchaseVO.getDivyRequest() %>" />
+			<input 	type="text" name="divyRequest" 	class="ct_input_g" style="width: 100px; height: 19px" 
+							maxLength="20" value="${purchase.divyRequest}" />
 		</td>
 	</tr>
 	<tr>

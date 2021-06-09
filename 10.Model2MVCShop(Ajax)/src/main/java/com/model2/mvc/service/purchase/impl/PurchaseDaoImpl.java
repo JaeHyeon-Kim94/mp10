@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import com.model2.mvc.common.Search;
+import com.model2.mvc.service.domain.Product;
 import com.model2.mvc.service.domain.Purchase;
+import com.model2.mvc.service.domain.User;
 import com.model2.mvc.service.purchase.PurchaseDao;
 
 @Repository("purchaseDaoImpl")
@@ -35,23 +37,45 @@ public class PurchaseDaoImpl implements PurchaseDao {
 	@Override
 	public Purchase getPurchaseByTranNo(int tranNo) throws Exception {
 		
-		return sqlSession.selectOne("PurchaseMapper.getPurchaseByTranNo", tranNo);
+		return sqlSession.selectOne("PurchaseMapper.findPurchaseByTranNo", tranNo);
 	}
 
 	@Override
 	public Purchase getPurchaseByProdNo(int prodNo) throws Exception {
 		
-		return sqlSession.selectOne("PurchaseMapper.getPurchaseByProdNo", prodNo);
+		return sqlSession.selectOne("PurchaseMapper.findPurchaseByProdNo", prodNo);
 	}
 
 	@Override
-	public List<Purchase> getPurchaseList(Search search, String buyerId) throws Exception {
+	public Map<String , Object> getPurchaseList(Search search, String buyerId) throws Exception {
 	
-		Map<String, Object> map = new HashMap<String, Object>();
+		System.out.println(search.getStartRowNum());
+		System.out.println(search.getEndRowNum());
+		Map<String , Object>  map = new HashMap<String, Object>();
+		
 		map.put("search", search);
 		map.put("buyerId", buyerId);
+	
 		
-		return sqlSession.selectList("PurchaseMapper.getPurchaseList", map);
+		List<Purchase> list = sqlSession.selectList("PurchaseMapper.getPurchaseList", map); 
+		
+		System.out.println(list.get(0));
+		System.out.println(list.get(1));
+		System.out.println(list.get(2));
+		
+		for (int i = 0; i < list.size(); i++) {
+			System.out.println("start");
+			list.get(i).setBuyer((User)sqlSession.selectOne("UserMapper.getUser", list.get(i).getBuyer().getUserId()));
+			System.out.println("setBuyer");
+			list.get(i).setPurchaseProd((Product)sqlSession.selectOne("ProductMapper.findProduct", list.get(i).getPurchaseProd().getProdNo()));
+			System.out.println("setProdPurchase");
+		}
+		
+		
+		map.put("totalCount", sqlSession.selectOne("PurchaseMapper.getTotalCount", buyerId));
+		map.put("list", list);
+		
+		return map;
 	}
 
 	@Override
