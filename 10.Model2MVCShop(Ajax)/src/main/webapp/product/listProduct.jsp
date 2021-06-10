@@ -69,7 +69,7 @@ $( ".ct_list_pop td:nth-child(3)" ).on("mouseenter" , function() {
 													+"상세 정보 :"+ JSONData.prodDetail+"<br/>"
 													+"제조 일자 :"+ JSONData.manuDate+"<br/>"
 													+"등록 일자 :"+ JSONData.regDate +"<br/>"
-							
+													+"이 미 지 :"+ "<img height = '200' width = '200' src = '/images/uploadFiles/"+JSONData.fileName+"'/>"
 							$( "#"+prodNo+"" ).html(displayValue);
 						}
 			
@@ -77,7 +77,7 @@ $( ".ct_list_pop td:nth-child(3)" ).on("mouseenter" , function() {
 		});
 	});
 	
-	$( ".ct_list_pop td:nth-child(3)" ).on("mouseenter" , function() {	
+	$( ".ct_list_pop td:nth-child(3)" ).on("mouseleave" , function() {	
 	
 		$("h3").remove();
 		

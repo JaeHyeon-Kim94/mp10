@@ -39,7 +39,7 @@
 		self.location = "/user/getUser?userId="+userId;
 		
 	});
-		
+
 });
 </script>
 </head>
@@ -132,7 +132,7 @@
 		
 	</tr>
 	<tr>
-		<td colspan="11" bgcolor="D6D7D6" height="1"></td>
+		<td id="${purchase.tranNo}" colspan="11" bgcolor="D6D7D6" height="1"></td>
 	</tr>
 	</c:forEach>
 
