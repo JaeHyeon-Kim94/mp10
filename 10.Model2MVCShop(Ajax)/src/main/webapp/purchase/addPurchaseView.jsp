@@ -4,6 +4,10 @@
 
 <html>
 <head>
+<link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet">
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script> 
+<link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.css" rel="stylesheet">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.js"></script>
 
 <link rel="stylesheet" href="/css/admin.css" type="text/css">
 <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
@@ -24,6 +28,8 @@ $(function(){
 
 		fncAddPurchase();
 	});
+	
+	$('#summernote').summernote();
 	
 });
 
@@ -180,10 +186,8 @@ $(function(){
 	<tr>
 		<td width="104" class="ct_write">구매요청사항</td>
 		<td bgcolor="D6D6D6" width="1"></td>
-		<td class="ct_write01">
-			<input		type="text" name="divyRequest" 	class="ct_input_g" 
-							style="width: 100px; height: 19px" maxLength="20" />
-		</td>
+		<td class="ct_write01"></td>
+
 	</tr>
 	<tr>
 		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
@@ -233,6 +237,10 @@ $(function(){
 		</td>
 	</tr>
 </table>
+
+<div id="summernote"></div>
+
+
 </form>
 
 </body>

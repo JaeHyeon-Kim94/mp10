@@ -169,7 +169,7 @@ public class PurchaseController {
 		
 		purchaseService.updatePurcahse(purchase);
 		
-		return "forward:/product/listProduct";
+		return "forward:/product/listProduct?menu"+menu;
 	}
 	
 }

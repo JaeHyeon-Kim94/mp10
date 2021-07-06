@@ -1,6 +1,10 @@
 package com.model2.mvc.web.product;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -18,10 +22,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.CookieGenerator;
 
 import com.model2.mvc.common.Page;
 import com.model2.mvc.common.Search;
+import com.model2.mvc.common.UploadFile;
 import com.model2.mvc.service.domain.Product;
 import com.model2.mvc.service.product.ProductService;
 
@@ -62,13 +68,14 @@ public class ProductController {
 	}
 	
 	@RequestMapping(value = "/addProduct", method = RequestMethod.POST)
-	public String addProduct( @ModelAttribute("product")Product product ) throws Exception {
+	public String addProduct( @ModelAttribute("product")Product product, Model model) throws Exception {
 
 		System.out.println("/product/addProduct");
 		//Business Logic
 		product.setManuDate(product.getManuDate().replaceAll("-", ""));
-		productService.addProduct(product);
-		
+		int prodNo = productService.addProduct(product);
+		System.out.println("insert Completed");
+		model.addAttribute(productService.getProduct(prodNo));
 		return "forward:/product/addProduct.jsp";
 	}
 	

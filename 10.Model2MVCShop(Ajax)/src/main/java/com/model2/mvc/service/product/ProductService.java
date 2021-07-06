@@ -9,7 +9,7 @@ import com.model2.mvc.service.domain.Product;
 
 public interface ProductService {
 	
-	public void addProduct(Product productVO) throws Exception;
+	public int addProduct(Product productVO) throws Exception;
 
 	public Product getProduct(int prodNo) throws Exception;
 
